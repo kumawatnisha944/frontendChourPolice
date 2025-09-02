@@ -19,7 +19,7 @@ const startBtn = document.getElementById('startBtn');
 const resetBtn = document.getElementById('resetBtn');
 
 // ✅ Initialize Socket.IO client
-const socket = io("http://localhost:3000");
+const socket = io("https://backendchourpolice.onrender.com");
 
 // Player info
 let playerName = "";
