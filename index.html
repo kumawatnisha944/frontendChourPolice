@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chour-Police (Multiplayer)</title>
+  <link rel="stylesheet" href="chour.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Chour — Police Game (4 Players) 🎮</h1>
+    <p class="muted">Police apna role privately dekhega aur accuse karega. (Server authoritative)</p>
+
+    <div id="joinArea">
+      <input id="roomCode" placeholder="Room Code (e.g. ABCD)" />
+      <input id="playerName" placeholder="Your Name" />
+      <button class="btn btn-primary" id="joinBtn">Join</button>
+    </div>
+
+    <div id="gameArea" style="display:none;">
+      <div><strong>Room:</strong> <span id="roomLabel"></span></div>
+      <div><strong>You:</strong> <span id="youLabel"></span> — <span id="yourRoleLabel">Role: ?</span></div>
+
+      <div class="players" id="playersArea"></div>
+
+      <div class="controls">
+        <button class="btn btn-primary" id="startBtn" style="display:none;">Start Round</button>
+        <button class="btn" id="resetBtn" style="display:none;">Reset Game</button>
+      </div>
+
+      <div class="scoreboard">
+        <h3>Scoreboard</h3>
+        <div id="scores"></div>
+        <div id="winner" class="winner" style="display:none"></div>
+      </div>
+
+      <div class="log" id="log"></div>
+    </div>
+  </div>
+
+  <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+  <script src="chour.js"></script>
+</body>
+</html>
