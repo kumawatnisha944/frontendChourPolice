@@ -16,7 +16,7 @@ const startBtn = document.getElementById('startBtn');
 const resetBtn = document.getElementById('resetBtn');
 
 // ✅ Initialize Socket.IO client (update with your backend URL)
-const socket = io("https://backendchourpolice.onrender.com");
+const socket = io("https://backendchourpolice-fie3.onrender.com");
 
 // Player info
 let playerName = "";
