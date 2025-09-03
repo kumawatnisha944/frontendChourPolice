@@ -1,6 +1,3 @@
-
-// client/chour.js
-
 // DOM Elements
 const logEl = document.getElementById('log');
 const playersArea = document.getElementById('playersArea');
@@ -18,12 +15,14 @@ const joinBtn = document.getElementById('joinBtn');
 const startBtn = document.getElementById('startBtn');
 const resetBtn = document.getElementById('resetBtn');
 
-// ✅ Initialize Socket.IO client
+// ✅ Initialize Socket.IO client (update with your backend URL)
 const socket = io("https://backendchourpolice.onrender.com");
 
 // Player info
 let playerName = "";
 let roomCode = "";
+let myRole = "";
+let myIndex = -1;
 
 // --- Join Button ---
 joinBtn.addEventListener('click', () => {
@@ -45,8 +44,6 @@ joinBtn.addEventListener('click', () => {
 });
 
 // --- Socket Events ---
-
-// Update room state
 socket.on('roomState', ({ players, hostId, round }) => {
   playersArea.innerHTML = "";
   players.forEach(p => {
@@ -65,32 +62,64 @@ socket.on('roomState', ({ players, hostId, round }) => {
 });
 
 // Receive your role
-socket.on('yourRole', ({ role }) => {
+socket.on('yourRole', ({ role, index }) => {
+  myRole = role;
+  myIndex = index;
   yourRoleLabel.textContent = `Role: ${role}`;
 });
 
 // Round start
-socket.on('roundStart', ({ round, players }) => {
+socket.on('roundStart', ({ round, players, policeIndex }) => {
   logEl.innerHTML = `Round ${round} started!`;
+
+  playersArea.innerHTML = "";
+  players.forEach((p, idx) => {
+    const div = document.createElement('div');
+    div.className = "playerBox";
+    div.innerHTML = `<b>${p}</b>`;
+
+    if (idx === policeIndex) {
+      div.classList.add("police");
+      div.innerHTML += " 👮";
+    }
+
+    // If I am police, I can click suspects
+    if (myRole === "police" && idx !== myIndex) {
+      div.classList.add("suspect");
+      div.onclick = () => {
+        socket.emit("accuse", { suspectIndex: idx });
+      };
+    }
+
+    playersArea.appendChild(div);
+  });
+
   scoresDiv.innerHTML = "";
   winnerEl.style.display = "none";
 });
 
 // Round result
 socket.on('roundResult', ({ suspectIndex, correct, rolesRevealed, totals }) => {
-  logEl.innerHTML = `Roles: ${rolesRevealed.join(", ")} <br> Suspect Correct? ${correct}`;
+  let result = correct ? "✅ Police caught the Thief!" : "❌ Police failed!";
+  logEl.innerHTML = `Roles: ${rolesRevealed.join(", ")} <br>${result}`;
+
   scoresDiv.innerHTML = totals.map(t => `${t.name}: ${t.score}`).join("<br>");
 });
 
 // Game over
-socket.on('gameOver', ({ winner, totals }) => {
+socket.on('gameOver', ({ winner, totals, history }) => {
   winnerEl.style.display = "block";
-  winnerEl.innerHTML = `Winner: ${winner.name} (${winner.score} pts)`;
+  winnerEl.innerHTML = `🏆 Winner: ${winner.name} (${winner.score} pts)`;
+
   scoresDiv.innerHTML = totals.map(t => `${t.name}: ${t.score}`).join("<br>");
+
+  logEl.innerHTML = "Game Over!<br>Role history:<br>" +
+    history.map((r, i) => `Round ${i + 1}: ${r.join(", ")}`).join("<br>");
 });
 
 // Game reset
 socket.on('gameReset', () => {
+  myRole = "";
   yourRoleLabel.textContent = "Role: ?";
   logEl.innerHTML = "";
   scoresDiv.innerHTML = "";
@@ -102,12 +131,10 @@ socket.on('errorMsg', msg => {
   alert(msg);
 });
 
-// --- Start Round Button ---
+// --- Buttons ---
 startBtn.addEventListener('click', () => {
   socket.emit('startRound');
 });
-
-// --- Reset Game Button ---
 resetBtn.addEventListener('click', () => {
   socket.emit('resetGame');
 });

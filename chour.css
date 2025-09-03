@@ -1,15 +1,17 @@
-*{margin:0}
+*{margin:0;padding:0;box-sizing:border-box}
 :root{font-family:system-ui,Segoe UI,Roboto,Arial;margin:0}
 body{background:#3f66a5;color:#111;display:flex;flex-direction:column;align-items:center;padding:18px}
 .container{width:980px;max-width:100%;background:rgb(127,185,197);padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(20,40,80,0.08)}
 h1{margin:0 0 8px;font-size:20px}
-.players{display:flex;gap:12px;margin:12px 0}
-.player{flex:1;padding:12px;border-radius:10px;border:1px dashed #d0d7e6;text-align:center;position:relative}
-.card{height:110px;display:flex;align-items:center;justify-content:center;background:#eef4ff;border-radius:8px;margin:10px 0;font-weight:700}
+.players{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:12px 0}
+.playerBox{padding:12px;border-radius:12px;border:2px solid #2563eb;text-align:center;position:relative;background:linear-gradient(135deg,#eef4ff,#dbeafe);font-weight:600;cursor:default}
+.playerBox.police{border-color:#f59e0b;background:#fef3c7}
+.playerBox.suspect{cursor:pointer;transition:transform .2s}
+.playerBox.suspect:hover{transform:scale(1.05)}
 .btn{padding:8px 12px;border-radius:8px;border:none;cursor:pointer}
 .btn-primary{background:#2563eb;color:#eef4ff}
 .btn-ghost{background:transparent;border:1px solid #cbd5e1}
-.muted{color:#556}
+.muted{color:#334155}
 .scoreboard{margin-top:12px}
-.log{max-height:120px;overflow:auto;border-top:1px solid #eef2ff;margin-top:12px;padding-top:8px;font-size:13px}
+.log{max-height:150px;overflow:auto;border-top:1px solid #eef2ff;margin-top:12px;padding-top:8px;font-size:13px}
 .winner{background:linear-gradient(90deg,#fde68a,#fca5a5);padding:6px;border-radius:8px;margin-top:8px}
